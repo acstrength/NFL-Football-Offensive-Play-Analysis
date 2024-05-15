@@ -1,0 +1,187 @@
+## Load libraries
+library(dplyr)
+library(plyr)
+library(caret)
+
+## Create and subset data frames ##
+wk1_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 1,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk1_2023<-select(wk1_2023, offense_play,play_type,down,yards_to_goal)
+
+wk2_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 2,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk2_2023<-select(wk2_2023,offense_play,play_type,down,yards_to_goal)
+
+wk3_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 3,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk3_2023<-select(wk3_2023,offense_play,play_type,down,yards_to_goal)
+
+wk4_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 4,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk4_2023<-select(wk4_2023,offense_play,play_type,down,yards_to_goal)
+
+
+wk5_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 5,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk5_2023<-select(wk5_2023,offense_play,play_type,down,yards_to_goal)
+
+wk7_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 7,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk7_2023<-select(wk7_2023,offense_play,play_type,down,yards_to_goal)
+
+wk8_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 8,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk8_2023<-select(wk8_2023,offense_play,play_type,down,yards_to_goal)
+
+wk9_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 9,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk9_2023<-select(wk9_2023,offense_play,play_type,down,yards_to_goal)
+
+wk10_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 10,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk10_2023<-select(wk10_2023,offense_play,play_type,down,yards_to_goal)
+
+wk11_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 11,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk11_2023<-select(wk11_2023,offense_play,play_type,down,yards_to_goal)
+
+wk12_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 12,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk12_2023<-select(wk12_2023,offense_play,play_type,down,yards_to_goal)
+
+wk13_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 13,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk13_2023<-select(wk13_2023,offense_play,play_type,down,yards_to_goal)
+
+wk14_2023<-cfbd_pbp_data(
+  year = 2023,
+  season_type = "regular",
+  week = 14,
+  team = 'UNLV',
+  play_type = NULL,
+  epa_wpa = FALSE,)
+
+wk14_2023<-select(wk14_2023,offense_play,play_type,down,yards_to_goal)
+
+## Combine Data Frames ##
+combined<-rbind.fill(wk1_2023[c('offense_play', 'play_type','down','yards_to_goal')],
+                     wk2_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk3_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk3_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk4_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk5_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk7_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk8_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk9_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk10_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk11_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk12_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk13_2023[c('offense_play','play_type','down','yards_to_goal')],
+                     wk14_2023[c('offense_play','play_type','down','yards_to_goal')])
+
+
+## Format Data ##
+combined<-combined%>%
+  filter(down %in% c(1,2,3))
+
+combined<-combined %>%
+  mutate(play_type = ifelse(grepl('Rush',play_type), 0, play_type))
+
+combined<-combined %>%
+  mutate(play_type = ifelse(grepl('Pass',play_type), 1, play_type))
+        
+         
+combined<-combined%>%
+  filter(play_type %in% c(0,1))
+
+combined$play_type<-as.factor(combined$play_type)
+combined$offense_play<-as.factor(combined$offense_play)
+combined$down<-as.factor(combined$down)
+
+## split data into training and testing sets ##
+
+set.seed(123)
+train_index<-createDataPartition(combined$play_type, p = 0.87, list = FALSE)
+train_data<-combined[train_index, ]
+test_data<-combined[-train_index, ]
+
+## Create/Train model ##
+model<-glm(play_type ~ down,yards_to_goal, data = train_data, family = 'binomial')
+
+## Evaluate model & make predictions
+predictions<-predict(model, newdata = test_data, type = 'response')
+binary_predictions<-ifelse(predictions > 0.5, 1, 0)
+accuracy<-mean(binary_predictions == test_data$play_type)
+print(paste('Accuracy:',accuracy))
