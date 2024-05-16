@@ -1,0 +1,33 @@
+## Load libraries
+
+library(tidyverse)
+library(vip)
+library(ggimage)
+library(ggplot2)
+
+## Create dataframe
+
+combined1<-combined
+
+## Obtain counts
+
+counts<-combined1%>%
+  group_by(down,play_type)%>%
+  summarize(count = n())
+
+## Format play_type column
+
+counts<-counts%>%
+  mutate(play_type = case_when(
+    play_type == 0 ~ 'Run',
+    play_type == 1 ~ 'Pass'
+  ))
+
+## Visualize with barchart by down and play_type
+
+ggplot(counts, aes(x = factor(down), y = count, fill = play_type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  labs(x = "Down", y = "Count") +
+  scale_x_discrete(labels = c("1st Down", "2nd Down", "3rd Down")) +
+  ggtitle("Counts by Down and Play Type") +
+  theme_minimal()
