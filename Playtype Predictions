@@ -151,8 +151,10 @@ combined<-rbind.fill(wk1_2023[c('offense_play', 'play_type','down','yards_to_goa
                      wk13_2023[c('offense_play','play_type','down','yards_to_goal')],
                      wk14_2023[c('offense_play','play_type','down','yards_to_goal')])
 
-
 ## Format Data ##
+combined<-combined %>%
+  filter(offense_play == 'UNLV')
+
 combined<-combined%>%
   filter(down %in% c(1,2,3))
 
@@ -173,15 +175,16 @@ combined$down<-as.factor(combined$down)
 ## split data into training and testing sets ##
 
 set.seed(123)
-train_index<-createDataPartition(combined$play_type, p = 0.87, list = FALSE)
+train_index<-createDataPartition(combined$play_type, p = 0.85, list = FALSE)
 train_data<-combined[train_index, ]
 test_data<-combined[-train_index, ]
 
 ## Create/Train model ##
-model<-glm(play_type ~ down,yards_to_goal, data = train_data, family = 'binomial')
+model<-glm(play_type ~ down, data = train_data, family = 'binomial')
 
 ## Evaluate model & make predictions
 predictions<-predict(model, newdata = test_data, type = 'response')
 binary_predictions<-ifelse(predictions > 0.5, 1, 0)
 accuracy<-mean(binary_predictions == test_data$play_type)
 print(paste('Accuracy:',accuracy))
+
