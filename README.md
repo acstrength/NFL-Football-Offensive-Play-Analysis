@@ -1,2 +1,2 @@
-# College-Football-Logistic-Regression
-The purpose of this analysis is to perform a logistic regression on the UNLV College Football data to determine the likelihood that they will run or pass on 1st, 2nd, or third down. 
+# College Football Analysis
+The purpose of this analysis is to develop an understanding of the 2023 UNLV College Football offensive play calling habits, specifically as they relate to 1st, 2nd, and 3rd down. 
