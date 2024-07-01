@@ -13,7 +13,6 @@ pbp <- load_pbp(2019:2023)
 dplyr::glimpse(pbp)
 })
 
-write.csv(pbp,"C:/Users/akeem/Desktop/SDSU BDA.csv",row.names = FALSE)
 ## Filter for Cinncenati Bengals ##
 CIN<-filter(pbp, home_team == 'CIN' | away_team =='CIN')
 
