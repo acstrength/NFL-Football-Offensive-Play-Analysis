@@ -1,0 +1,23 @@
+Coefficients:
+                     Estimate Std. Error z value Pr(>|z|)    
+(Intercept)        -0.8475668  0.1363527  -6.216 5.10e-10 ***
+qtr2               -0.3498811  0.0947546  -3.692 0.000222 ***
+qtr3               -0.0904757  0.0606413  -1.492 0.135704    
+qtr4               -0.5988771  0.0930466  -6.436 1.22e-10 ***
+qtr5               -0.4944141  0.1933072  -2.558 0.010538 *  
+down2               0.8349276  0.0505004  16.533  < 2e-16 ***
+down3               1.9130009  0.0699944  27.331  < 2e-16 ***
+half_minutes       -0.0310485  0.0046389  -6.693 2.18e-11 ***
+yds_to_go           0.1540691  0.0074986  20.546  < 2e-16 ***
+yds_to_goal         0.0004630  0.0008927   0.519 0.603993    
+score_differential -0.0265507  0.0020211 -13.137  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 14711  on 10935  degrees of freedom
+Residual deviance: 13393  on 10925  degrees of freedom
+AIC: 13415
+
+Number of Fisher Scoring iterations: 4
