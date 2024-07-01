@@ -1,4 +1,5 @@
-### load libraries
+
+# ### load libraries
 install.packages('nflfastR')
 install.packages('pROC')
 library(nflfastR)
@@ -60,22 +61,12 @@ test_data<-CIN1[-train_index, ]
 train_control<-trainControl(method = 'cv', number = 5)
 
 
-
-model1<-train(play_is_pass ~ qtr + down + score_differential  + half_minutes
-                + yds_to_go + yds_to_goal,
-               data = train_data,
-             method = 'glm',
-             family = 'binomial',
-             trControl = train_control)
-print(model1)
-summary(model1)
-
 model3<-glm(play_is_pass ~ qtr + down + half_minutes+ yds_to_go + yds_to_goal + 
               score_differential,data = CIN1,
             family = binomial)
 summary(model3)
-exp(coef(model3))
 
+exp(coef(model3))
 
 ## Obtain predictions ##
 predictions<-predict(model1, newdata = test_data)
@@ -100,8 +91,21 @@ plot(roc_obj, main = 'ROC Curve', col = 'blue', lwd = 2, legacy.axes = TRUE)
 auc_score<-auc(roc_obj)
 print(auc_score)
 
-summary(model)
-typeof(test_data$play_is_pass)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
