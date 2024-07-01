@@ -1,0 +1,121 @@
+### load libraries
+install.packages('nflfastR')
+install.packages('pROC')
+library(nflfastR)
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(pROC)
+
+
+## get play by play data from 2019-2023 ##
+pbp <- load_pbp(2019:2023)
+dplyr::glimpse(pbp)
+})
+
+write.csv(pbp,"C:/Users/akeem/Desktop/SDSU BDA.csv",row.names = FALSE)
+## Filter for Cinncenati Bengals ##
+CIN<-filter(pbp, home_team == 'CIN' | away_team =='CIN')
+
+## Select for collumns of interest of interest ##
+CIN1<-select(CIN,play_id,game_id, home_team,away_team,qtr,play_type,down,
+             quarter_seconds_remaining,half_seconds_remaining,game_seconds_remaining,
+             game_half,ydstogo,yardline_100,posteam_score,defteam_score,score_differential)
+
+## Rename Columns ##
+CIN1<-rename(CIN1,play_is_pass = play_type)
+CIN1<-rename(CIN1,yds_to_goal = yardline_100)
+CIN1<-rename(CIN1,yds_to_go = ydstogo)
+
+## Flter for 1st, 2nd, and 3rd down ##
+CIN1<-CIN1%>%
+  filter(down %in% c(1,2,3))
+
+
+ ## Format data ##
+CIN1<-CIN1%>%
+  mutate(play_is_pass = ifelse(grepl('run',play_is_pass), 0, play_is_pass))
+
+CIN1<-CIN1%>%
+  mutate(play_is_pass = ifelse(grepl('pass',play_is_pass),1,play_is_pass))
+
+CIN1<-CIN1%>%
+  filter(play_is_pass %in% c(0,1))
+
+CIN1<-CIN1%>%
+  mutate(half_seconds_remaining = half_seconds_remaining / 60, 
+         half_seconds_remaining)
+
+CIN1<-CIN1%>%
+  rename(half_minutes = half_seconds_remaining)
+
+CIN1$play_is_pass<-as.factor((CIN1$play_is_pass))
+CIN1$down<-as.factor(CIN1$down)
+CIN1$qtr<-as.factor(CIN1$qtr)
+
+## Create Model ##
+set.seed(123)
+train_index<-createDataPartition(CIN1$play_is_pass, p = .70, list = FALSE)
+train_data<-CIN1[train_index, ]
+test_data<-CIN1[-train_index, ]
+train_control<-trainControl(method = 'cv', number = 5)
+
+
+
+model1<-train(play_is_pass ~ qtr + down + score_differential  + half_minutes
+                + yds_to_go + yds_to_goal,
+               data = train_data,
+             method = 'glm',
+             family = 'binomial',
+             trControl = train_control)
+print(model1)
+summary(model1)
+
+model3<-glm(play_is_pass ~ qtr + down + half_minutes+ yds_to_go + yds_to_goal + 
+              score_differential,data = CIN1,
+            family = binomial)
+summary(model3)
+exp(coef(model3))
+
+
+## Obtain predictions ##
+predictions<-predict(model1, newdata = test_data)
+predictions
+
+#### Evaluate performance ####
+
+## Create confusion matrix ##
+
+cm<-confusionMatrix(predictions, test_data$play_is_pass)
+print(cm)
+
+## Create ROC object ##
+predictions<-as.numeric(predictions)
+test_data$play_is_pass<-as.numeric(test_data$play_is_pass)
+roc_obj<-roc(test_data$play_is_pass, predictions)
+
+## Plot ROC curve ##
+plot(roc_obj, main = 'ROC Curve', col = 'blue', lwd = 2, legacy.axes = TRUE)
+
+## Calculate AUC ##
+auc_score<-auc(roc_obj)
+print(auc_score)
+
+summary(model)
+typeof(test_data$play_is_pass)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
