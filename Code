@@ -1,4 +1,3 @@
-
 # ### load libraries
 install.packages('nflfastR')
 install.packages('pROC')
@@ -12,15 +11,14 @@ library(pROC)
 ## get play by play data from 2019-2023 ##
 pbp <- load_pbp(2019:2023)
 dplyr::glimpse(pbp)
-})
 
-## Filter for Cinncenati Bengals ##
+## Filter for Cincinnati Bengals ##
 CIN<-filter(pbp, home_team == 'CIN' | away_team =='CIN')
 
-## Select for collumns of interest of interest ##
-CIN1<-select(CIN,play_id,game_id, home_team,away_team,qtr,play_type,down,
+## Select for columns of interest of interest ##
+CIN1<-select(CIN, home_team,away_team,qtr,play_type,down,
              quarter_seconds_remaining,half_seconds_remaining,game_seconds_remaining,
-             game_half,ydstogo,yardline_100,posteam_score,defteam_score,score_differential)
+             game_half,ydstogo,yardline_100,score_differential)
 
 ## Rename Columns ##
 CIN1<-rename(CIN1,play_is_pass = play_type)
@@ -53,6 +51,18 @@ CIN1$play_is_pass<-as.factor((CIN1$play_is_pass))
 CIN1$down<-as.factor(CIN1$down)
 CIN1$qtr<-as.factor(CIN1$qtr)
 
+## Create correlation matrix
+cm<-(select(CIN1,qtr,play_is_pass,down,half_minutes,score_differential,yds_to_go,
+       yds_to_goal))
+
+cm$qtr<-as.numeric(cm$qtr)
+cm$down<-as.numeric(cm$down)
+cm$play_is_pass<-as.numeric(cm$play_is_pass)
+
+CIN1$play_is_pass<-as.factor((CIN1$play_is_pass))
+CIN1$down<-as.factor(CIN1$down)
+CIN1$qtr<-as.factor(CIN1$qtr)
+
 ## Create Model ##
 set.seed(123)
 train_index<-createDataPartition(CIN1$play_is_pass, p = .70, list = FALSE)
@@ -61,23 +71,30 @@ test_data<-CIN1[-train_index, ]
 train_control<-trainControl(method = 'cv', number = 5)
 
 
-model3<-glm(play_is_pass ~ qtr + down + half_minutes+ yds_to_go + yds_to_goal + 
+model3<-glm(play_is_pass ~ qtr : down + half_minutes+ yds_to_go + yds_to_goal + 
               score_differential,data = CIN1,
             family = binomial)
+
+
 summary(model3)
 
-exp(coef(model3))
-
 ## Obtain predictions ##
-predictions<-predict(model1, newdata = test_data)
-predictions
+predicted_probs<- predict(model3, newdata = test_data, type = "response")
+predictions<- ifelse(predicted_probs > 0.5, 1, 0)
+predictions<- factor(predictions, levels = c(0, 1))
 
-#### Evaluate performance ####
+## Convert test labels to factor
+test_data$play_is_pass <- factor(test_data$play_is_pass, levels = c(0, 1))
 
 ## Create confusion matrix ##
-
-cm<-confusionMatrix(predictions, test_data$play_is_pass)
+cm <- confusionMatrix(predictions, test_data$play_is_pass)
 print(cm)
+
+## Calculate odds ratios
+
+odds_ratios<-exp(coef(model3))
+odds_ratios<-data.frame(odds_ratios)
+
 
 ## Create ROC object ##
 predictions<-as.numeric(predictions)
@@ -90,20 +107,6 @@ plot(roc_obj, main = 'ROC Curve', col = 'blue', lwd = 2, legacy.axes = TRUE)
 ## Calculate AUC ##
 auc_score<-auc(roc_obj)
 print(auc_score)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
