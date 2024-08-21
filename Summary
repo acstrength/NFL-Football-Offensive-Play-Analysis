@@ -1,23 +1,32 @@
-Coefficients:
+Coefficients: (1 not defined because of singularities)
                      Estimate Std. Error z value Pr(>|z|)    
-(Intercept)        -0.8475668  0.1363527  -6.216 5.10e-10 ***
-qtr2               -0.3498811  0.0947546  -3.692 0.000222 ***
-qtr3               -0.0904757  0.0606413  -1.492 0.135704    
-qtr4               -0.5988771  0.0930466  -6.436 1.22e-10 ***
-qtr5               -0.4944141  0.1933072  -2.558 0.010538 *  
-down2               0.8349276  0.0505004  16.533  < 2e-16 ***
-down3               1.9130009  0.0699944  27.331  < 2e-16 ***
-half_minutes       -0.0310485  0.0046389  -6.693 2.18e-11 ***
-yds_to_go           0.1540691  0.0074986  20.546  < 2e-16 ***
-yds_to_goal         0.0004630  0.0008927   0.519 0.603993    
-score_differential -0.0265507  0.0020211 -13.137  < 2e-16 ***
+(Intercept)         0.8598958  0.4635876   1.855  0.06361 .  
+half_minutes       -0.0309132  0.0046443  -6.656 2.81e-11 ***
+yds_to_go           0.1547232  0.0075127  20.595  < 2e-16 ***
+yds_to_goal         0.0004522  0.0008944   0.506  0.61311    
+score_differential -0.0263579  0.0020242 -13.021  < 2e-16 ***
+qtr1:down1         -1.7330845  0.4732904  -3.662  0.00025 ***
+qtr2:down1         -1.9775907  0.4655351  -4.248 2.16e-05 ***
+qtr3:down1         -1.9882962  0.4733143  -4.201 2.66e-05 ***
+qtr4:down1         -2.2180466  0.4661238  -4.758 1.95e-06 ***
+qtr5:down1         -2.2143761  0.5208350  -4.252 2.12e-05 ***
+qtr1:down2         -0.9160186  0.4737711  -1.933  0.05318 .  
+qtr2:down2         -1.3207316  0.4659328  -2.835  0.00459 ** 
+qtr3:down2         -0.8694251  0.4738888  -1.835  0.06656 .  
+qtr4:down2         -1.4303298  0.4662439  -3.068  0.00216 ** 
+qtr5:down2         -1.4944774  0.5466552  -2.734  0.00626 ** 
+qtr1:down3          0.3460868  0.4818770   0.718  0.47263    
+qtr2:down3         -0.2360006  0.4721176  -0.500  0.61716    
+qtr3:down3          0.5254299  0.4833780   1.087  0.27704    
+qtr4:down3         -0.7411072  0.4701108  -1.576  0.11492    
+qtr5:down3                 NA         NA      NA       NA    
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 (Dispersion parameter for binomial family taken to be 1)
 
     Null deviance: 14711  on 10935  degrees of freedom
-Residual deviance: 13393  on 10925  degrees of freedom
-AIC: 13415
+Residual deviance: 13346  on 10917  degrees of freedom
+AIC: 13384
 
 Number of Fisher Scoring iterations: 4
