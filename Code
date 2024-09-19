@@ -1,9 +1,13 @@
-#### load libraries
+# ### load libraries
+install.packages('nflfastR')
+install.packages('pROC')
 library(nflfastR)
 library(dplyr)
 library(ggplot2)
 library(caret)
 library(pROC)
+library(tidyr)
+
 
 ## get play by play data from 2019-2023 ##
 pbp <- load_pbp(2019:2023)
@@ -12,7 +16,7 @@ dplyr::glimpse(pbp)
 ## Filter for Cincinnati Bengals ##
 CIN<-filter(pbp, home_team == 'CIN' | away_team =='CIN')
 
-## Select for columns of interest ##
+## Select for columns of interest of interest ##
 CIN1<-select(CIN, home_team,away_team,qtr,play_type,down,
              quarter_seconds_remaining,half_seconds_remaining,game_seconds_remaining,
              game_half,ydstogo,yardline_100,score_differential)
@@ -25,6 +29,7 @@ CIN1<-rename(CIN1,yds_to_go = ydstogo)
 ## Flter for 1st, 2nd, and 3rd down ##
 CIN1<-CIN1%>%
   filter(down %in% c(1,2,3))
+
 
  ## Format data ##
 CIN1<-CIN1%>%
@@ -47,7 +52,7 @@ CIN1$play_is_pass<-as.factor((CIN1$play_is_pass))
 CIN1$down<-as.factor(CIN1$down)
 CIN1$qtr<-as.factor(CIN1$qtr)
 
-## Create correlation matrix ##
+## Create correlation matrix
 cm<-(select(CIN1,qtr,play_is_pass,down,half_minutes,score_differential,yds_to_go,
        yds_to_goal))
 
@@ -56,7 +61,6 @@ cm$down<-as.numeric(cm$down)
 cm$play_is_pass<-as.numeric(cm$play_is_pass)
 
 cm<-cor(cm)
-print(cm)
 
 CIN1$play_is_pass<-as.factor((CIN1$play_is_pass))
 CIN1$down<-as.factor(CIN1$down)
@@ -74,7 +78,7 @@ model3<-glm(play_is_pass ~ qtr : down + half_minutes+ yds_to_go + yds_to_goal +
               score_differential,data = CIN1,
             family = binomial)
 
-## Obtain model summary ##
+
 summary(model3)
 
 ## Obtain predictions ##
@@ -86,14 +90,13 @@ predictions<- factor(predictions, levels = c(0, 1))
 test_data$play_is_pass <- factor(test_data$play_is_pass, levels = c(0, 1))
 
 ## Create confusion matrix ##
-cm1 <- confusionMatrix(predictions, test_data$play_is_pass)
-print(cm1)
+cm <- confusionMatrix(predictions, test_data$play_is_pass)
+print(cm)
 
-## Calculate odds ratios ##
+## Calculate odds ratios
 
 odds_ratios<-exp(coef(model3))
 odds_ratios<-data.frame(odds_ratios)
-print(odds_ratios)
 
 
 ## Create ROC object ##
@@ -108,6 +111,27 @@ plot(roc_obj, main = 'ROC Curve', col = 'blue', lwd = 2, legacy.axes = TRUE)
 auc_score<-auc(roc_obj)
 print(auc_score)
 
+## Create data frame of run and pass counts ##
+
+run_count<-sum(CIN1$play_is_pass == 0)
+pass_count<-sum(CIN1$play_is_pass == 1)
+
+counts<-data.frame(
+  Play_Type = c('run_count','pass_count'),
+  Count = c(4363,6573))
+
+## Create histogram of play types ##
+ggplot(counts, aes(x = Play_Type, y = Count, fill = Play_Type)) +
+  geom_bar(stat = 'identity', width = 0.5) +
+  scale_fill_manual(values = c('run_count' = 'black','pass_count'='#FF6600'))+
+  labs(x = 'Play Type', y = 'Count', title = 'Play Type Summary') +
+  theme_minimal()
+
+
+
+
+
+  
 
 
 
